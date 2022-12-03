@@ -4,7 +4,7 @@ Makefile example:
   3. 
 
 - Rajouter tests unitaires pour tester les questions
-- Parler des packages
+- Parler des packages/modules
 
 ```bash
 main: main.py
