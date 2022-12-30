@@ -1,0 +1,12 @@
+Fast binary palindrome
+qCopy
+qAccept
+qCopy,qCopy,0,0,>,_,0,>
+qCopy,qCopy,1,1,>,_,1,>
+qCopy,qReturn,_,_,-,_,_,<
+qReturn,qReturn,_,_,-,0,0,<
+qReturn,qReturn,_,_,-,1,1,<
+qReturn,qTest,_,_,<,_,_,>
+qTest,qTest,0,0,<,0,0,>
+qTest,qTest,1,1,<,1,1,>
+qTest,qAccept,_,_,-,_,_,-
