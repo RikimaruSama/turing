@@ -1,7 +1,7 @@
 Binary palindrome
 q0
 qAccept
-q0,qRight0,1,_,>
+q0,qRight0,0,_,>
 qRight0,qRight0,0,0,>
 qRight0,qRight0,1,1,>
 q0,qRight1,1,_,>
