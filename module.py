@@ -15,7 +15,7 @@ def file_to_dict(path):
     turing_dict['init'] = line.replace(" ", "", 1)
 
     line = f.readline().replace("\n", "")
-    turing_dict['accept'] = line.replace(" ", "", 1)
+    turing_dict['accept'] = line.replace(" ", "", 1).split(',')
 
     line = f.readline().replace("\n", "")
     checkERR(line, turing_dict["alphabet"])
@@ -54,5 +54,3 @@ def checkERR(line,alphabet):
 def info_bande(line):
   nbr_bandes = int((len(line.split(',')) - 5) / 3 + 1)
   return [ref for ref in range(2, 2 * nbr_bandes + nbr_bandes, 3)]
-
-

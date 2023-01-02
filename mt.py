@@ -1,6 +1,7 @@
 class MT:
 
-  def __init__(self,dico=None,
+  def __init__(self,
+               dico=None,
                etat_actuel=None,
                etat_final=None,
                transitions=None,
@@ -8,7 +9,7 @@ class MT:
                bandes=[],
                refs=[]):
     if dico == None:
-      self.etat_actuel,self.etat_final,self.transitions,self.alphabet = etat_actuel, etat_final, transitions, alphabet
+      self.etat_actuel, self.etat_final, self.transitions, self.alphabet = etat_actuel, etat_final, transitions, alphabet
       self.bandes, self.refs = bandes, refs
     else:
       self.etat_actuel = dico['init']
@@ -17,28 +18,33 @@ class MT:
       self.alphabet = dico["alphabet"]
       self.bandes = []
       self.refs = dico['refs']
-                 
+
   def setter_etat(self, etat):
     self.etat_actuel = etat
 
-  def add(self,bande):
+  def add(self, bande):
     self.bandes.append(bande)
-  
-  def run(self, max_iter=100):
+
+  def run(self, max_iter=100, draw=True):
     iter = 0
-    print("------------------- initialisation")
-    for bande in self.bandes:
-      print(bande)
-    while self.etat_actuel != self.etat_final and iter < max_iter:
-      self.step()
-      print("------------------- etape: " + str(iter))
+    if draw == True:
+      print("------------------- initialisation")
       for bande in self.bandes:
         print(bande)
-      iter += 1
-      if iter == max_iter:
-        print("rejeted")
-        return False
-    print("accepted")
+    for etat_final in self.etat_final:
+      while self.etat_actuel != etat_final and iter < max_iter:
+        self.step()
+        if draw == True:
+          print("------------------- etape: " + str(iter))
+          for bande in self.bandes:
+            print(bande)
+        iter += 1
+        if iter == max_iter:
+          if draw == True:
+            print("rejeted")
+          return False
+      if draw == True:
+        print("accepted")
     return True
 
   def step(self):
@@ -50,6 +56,7 @@ class MT:
         for ref in self.refs:
           check_t.append(transition[ref])
         if check == check_t:
+          print("good")
           for buff in zip(self.bandes, self.refs):
             buff[0].write_tete(transition[buff[1] + 1])
             buff[0].move_tete(transition[buff[1] + 2])
@@ -57,8 +64,38 @@ class MT:
           break
         check.clear()
         check_t.clear()
+
+  def erase(self, i):
+    del self.bandes[i]
+
+  def left(self, i):
+    count = 0
+    for char in self.bandes[i].characters[::-1]:
+      if char != '_':
+          break
+      count += 1
+    return len(self.bandes[i].characters)-count-1
+    
+
+  def search(self, i, a, draw=False):
+    index_tete = 0
+    for char in self.bandes[i].characters:
+      if char != '_' and char == a:
+        if draw == True:
+          print("SEARCH(bande " + str(i) + "): " + char + " pour l'index " +
+                str(index_tete))
+        return index_tete
+      index_tete += 1
+    raise TypeError("Lettre non trouvé")
+
+  def copy(self, i, j):
+    self.bandes[j].characters = self.bandes[i].characters.copy()
+    self.bandes[j].index_tete = self.bandes[i].index_tete
+    self.bandes[j].alphabet = self.bandes[i].alphabet
   
+
 class Bande:
+
   def __init__(self, characters='_', index_tete=0, alphabet=('0', '1', '_')):
     self.alphabet = alphabet
     for letter in list(characters):
@@ -83,6 +120,21 @@ class Bande:
     value, buff = "|", ""
     for char in self.characters:
       value += char
-    buff = (self.index_tete+1) * " "
+    buff = (self.index_tete + 1) * " "
     value += "|\n" + buff + "^"
     return value
+
+
+def linker(m1, m2):
+  m3 = MT(etat_actuel=m1.etat_actuel,
+          etat_final=m1.etat_final,
+          transitions=m1.transitions,
+          alphabet=m1.alphabet,
+          ref=m1.etat_actuel)
+  for transition in m2.transitions:
+    m3.transitions.append(transition)
+
+  for etat_final in m2:
+    m3.etat_final.append(etat_final)
+
+  return m3
